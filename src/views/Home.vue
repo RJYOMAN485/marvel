@@ -1,9 +1,23 @@
 <template>
   <div class="flex-container">
+    <nav class="col-12 navbar navbar-light bg-light">
+      <div class="container-fluid text-center">
+        <a class="navbar-brand text-center">Marvel</a>
+        <form class="d-flex">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
     <div
       @click="handleClick(list)"
       v-for="list in lists"
-      :key="list.id"
+      :key="list?.id"
       style="cursor: pointer"
       class="column"
     >
@@ -13,36 +27,37 @@
         style="width: 100%"
         width="200"
         height="200"
-        :src="list.thumbnail.path + '/portrait_xlarge.jpg'"
+        :src="list?.thumbnail?.path + '/portrait_xlarge.jpg'"
         alt=""
       />
-      <p class="name">{{ list.name }}</p>
+      <p class="name">{{ list?.name }}</p>
       <!-- </router-link> -->
     </div>
-    <!-- <character/> -->
-    <!-- PAGINATE -->
-
-    <!-- <jw-pagination :items="lists" @changePage="onChangePage"></jw-pagination> -->
-    <!-- <div class="column">a</div>
-    <div class="column">c</div> -->
+    <!-- <b-pagination
+      v-model="lists"
+      :total-rows="17"
+      :per-page="3"
+      aria-controls="itemList"
+      align="center"
+    ></b-pagination> -->
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
-import JwPagination from "jw-vue-pagination";
+// import JwPagination from "jw-vue-pagination";
 import Character from "../components/Character.vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
 export default {
   components: {
-    JwPagination,
+    // JwPagination,
     Character,
   },
   setup() {
-    const lists = ref([]);
+    // const lists = ref([]);
 
     const store = useStore();
 
@@ -51,6 +66,8 @@ export default {
     // store.commit("setCharacter");
 
     onMounted(() => {
+      console.log("store", store.state.characters);
+      return;
       axios
         .get(
           "https://gateway.marvel.com/v1/public/characters?ts=thesoer&apikey=8883d6939bade2a1903d84ee45e717c2&hash=a0b1a49669b4db59c067419443f56c0f"
@@ -63,7 +80,7 @@ export default {
       // console.log('');
     });
     return {
-      lists,
+      lists: computed(() => store.state.characters),
       handleClick(list) {
         store.commit("setCharacter", list);
 
