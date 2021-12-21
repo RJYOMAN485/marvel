@@ -111,7 +111,6 @@ export default {
     const id = ref({});
 
     onMounted(() => {
-      console.log("teest", store.state.characters);
       const data = store.state.characters;
       // lists.value = store.state.characters
 
@@ -129,12 +128,12 @@ export default {
       //   lists
     });
     return {
-      // id: computed(() => store.state.character),
+     
       id,
-      //   lists: computed(() => store.state.characters),
+     
 
       router,
-      //   list
+     
     };
   },
 };

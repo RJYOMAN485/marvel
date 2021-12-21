@@ -3,15 +3,15 @@
     <nav class="col-12 navbar navbar-light bg-light">
       <div class="container-fluid text-center">
         <a class="navbar-brand text-center">Marvel</a>
-        <form class="d-flex">
+        <!-- <form class="d-flex"> -->
           <input
             class="form-control me-2"
             type="search"
             placeholder="Search"
             aria-label="Search"
           />
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+          <button @click="search" class="btn btn-outline-success" >Search</button>
+        <!-- </form> -->
       </div>
     </nav>
     <div
@@ -31,6 +31,7 @@
         alt=""
       />
       <p class="name">{{ list?.name }}</p>
+      <p style="line-height: normal">{{ list?.description }}</p>
       <!-- </router-link> -->
     </div>
     <!-- <b-pagination
@@ -63,22 +64,48 @@ export default {
 
     const router = useRouter();
 
+    const search = () => {
+      // return console.log('hh');
+      const data = store.state.characters;
+
+      const search = "Avengers: The Initiative (2007) #14";
+
+      const results = [];
+
+
+      var flag = false;
+
+      // console.log('data',data);
+
+      data.forEach((item) => {
+        // const test = {};
+        // console.log('name',item.name);
+        flag = false
+        if (item?.name == search) {
+          console.log('element',item.name);
+          flag = true
+        }
+
+        if (!flag) {
+          item?.comics?.items.forEach((e) => {
+            if (e.name == search) {
+              flag = true
+              // break
+            }
+          });
+        }
+
+        if(flag) results.push(item)
+
+        // results.push(element)
+      });
+
+
+      console.log('searh term',results);
+    };
+
     // store.commit("setCharacter");
 
-    onMounted(() => {
-      console.log("store", store.state.characters);
-      return;
-      axios
-        .get(
-          "https://gateway.marvel.com/v1/public/characters?ts=thesoer&apikey=8883d6939bade2a1903d84ee45e717c2&hash=a0b1a49669b4db59c067419443f56c0f"
-        )
-        .then((res) => {
-          lists.value = res.data.data.results;
-          console.log("marvels", lists.value);
-          store.commit("setCharacters", lists.value);
-        });
-      // console.log('');
-    });
     return {
       lists: computed(() => store.state.characters),
       handleClick(list) {
@@ -91,10 +118,8 @@ export default {
           },
         });
       },
-      // onChangePage(lists) {
-      //   // update page of items
-      //   lists.value = lists.value;
-      // },
+
+      search,
 
       clickCallback(pageNum) {
         console.log(pageNum);
